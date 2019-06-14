@@ -1,15 +1,15 @@
 define([
   "esri/geometry",
   "esri/geometry/support/meshUtils",
+  "esri/geometry/Mesh",
   "./layout"
 ], function(
   geometry,
   meshUtils,
+  Mesh,
   layout
 ) {
-  const Point = geometry.Point;
   const Polygon = geometry.Polygon;
-  const Mesh = geometry.Mesh;
 
   function fromString(font, s, origin, options) {
     const characters = layout.toPaths(font, s, options && options.size, options && options.alignment);
