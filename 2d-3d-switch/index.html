@@ -2,8 +2,8 @@
 <html>
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
   <title>John Snow Cholera Map 2D - 3D</title>
 
   <style>
@@ -12,28 +12,70 @@
       padding: 0;
       width: 100%;
       height: 100%;
+      font-family: "Arial", sans-serif;
+      overflow: hidden;
     }
+
     #viewDiv,
     #mapViewDiv {
       position: absolute;
       transition: 3000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms opacity;
     }
+
     #viewDiv.switch-on,
     #mapViewDiv.switch-on {
       opacity: 1;
       z-index: 2;
     }
+
     #viewDiv.switch-off,
     #mapViewDiv.switch-off {
       opacity: 0.001;
       z-index: 1;
     }
+
     #switch-view {
-      position: absolute;
+      position: relative;
+      display: block;
       top: 20px;
       right: 20px;
       z-index: 3;
+      background-color: white;
+      border: none;
+      padding: 5px;
+      width: 115px;
+      color: black;
+      margin-left: 104px;
+      text-align: center;
     }
+    #switch-view:hover{
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .infoPanel {
+      font-style: italic;
+      position: relative;
+      width: 300px;
+      height:100%;
+      z-index: 100;
+      color: white;
+      padding: 10px;
+      padding: 10px 34px 40px 24px;
+      text-align: justify;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .infoPanel h2 {
+      text-align: left;
+    }
+
+    #johnSnow {
+      background-image: url("john_snow.png");
+      background-size: cover;
+      width: 302px;
+      height: 191px;
+    }
+
   </style>
   <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/dark/main.css">
   <script src="https://js.arcgis.com/4.11/"></script>
@@ -77,9 +119,15 @@
         container: "mapViewDiv",
         map: webmap
       });
+      mapView.ui.move([ "zoom" ], "top-right");
+      mapView.when(function(){
+        webmap.ground.surfaceColor = '#ffffff';
+        webmap.basemap = null;
+      });
 
       var sceneView = scene.create();
-      sceneView.extent = mapView.extent;
+      sceneView.ui.move([ "zoom", "navigation-toggle", "compass" ], "top-right");
+      sceneView.padding = mapView.padding = {left: 300};
 
       let is2D = true;
       // button that switches between 2D and 3D views
@@ -89,6 +137,7 @@
         switchButton.innerHTML = is2D ? "Switch to 3D" : "Switch to 2D";
         switchView();
       });
+
       function switchView() {
         const newView = is2D ? mapView : sceneView;
         const oldView = is2D ? sceneView : mapView;
@@ -97,12 +146,12 @@
           newView.goTo({
             rotation: oldView.rotation,
             tilt: 0
-          }, { animate: false })
-            .then(function() {
+          }, {animate: false})
+            .then(function () {
               animateOpacity(newView, oldView);
               return promiseUtils.after(1000)
             })
-            .then(function() {
+            .then(function () {
               newView.goTo({
                 tilt: 60
               }, {speedFactor: 0.3});
@@ -111,12 +160,13 @@
           oldView.goTo({
             tilt: 0
           }, {speedFactor: 0.5})
-            .then(function() {
+            .then(function () {
               animateOpacity(newView, oldView);
               newView.rotation = 360 - oldView.camera.heading;
             });
         }
       }
+
       function animateOpacity(newView, oldView) {
         newView.container.classList.remove("switch-off");
         newView.container.classList.add("switch-on");
@@ -130,7 +180,24 @@
 <body>
 <div id="viewDiv" class="switch-off"></div>
 <div id="mapViewDiv" class="switch-on"></div>
-<button id="switch-view" class="demo-button"> Switch to 3D</button>
+<div class="infoPanel panel2d">
+  <div>
+    <div id="johnSnow"></div>
+    <br> <br>
+  John Snow's map of cholera outbreaks from nineteenth century London changed how we saw a disease and is considered as one of the most inspirational examples of data journalism.
+  In the world of the 1850s, cholera was believed to be spread by miasma in the air and the sudden and serious outbreak of cholera in London's Soho was a mystery.<br>
+    His map essentially represented each death as a bar as you can see in his map on the right. It became apparent that the cases were clustered around the pump in Broad (now Broadwick) street, which was polluted by sewage from a nearby cesspit.
+    <br>
+    <br>
+  This visualization worked for this particular case, but doesn't scale. Those bars could overlap, extend of streets or other features of the map and most importantly are hard to compare. They are aligned with each street, so opposite sides or perpendicular streets make a direct comparison difficult.
+    This is why we created a new map and took his data to the third dimension.
+  <div id="switch-view" class="demo-button"> Switch to 3D </div>
+  </div>
+</div>
+<div class="infoPanel panel3d">
+
+</div>
+
 </body>
 
 </html>

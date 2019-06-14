@@ -1,5 +1,6 @@
 define([
   "esri/WebScene",
+  "esri/Color",
   "esri/views/SceneView",
   "esri/views/3d/support/debugFlags",
   "esri/Graphic",
@@ -8,7 +9,7 @@ define([
   "esri/geometry",
   "./font",
   "./fontmesh"
-], function (WebScene, SceneView, debugFlags, Graphic, FeatureLayer,LabelClass, geometry, font, fontmesh) {
+], function (WebScene, Color, SceneView, debugFlags, Graphic, FeatureLayer,LabelClass, geometry, font, fontmesh) {
 
   function create() {
     // debugFlags.DRAW_MESH_GEOMETRY_NORMALS = true;
@@ -24,7 +25,7 @@ define([
       map: map,
       qualityProfile: "high"
     });
-
+    view.highlightOptions.color = new Color("#b5b5b5");
     var thiessenPolygons = new FeatureLayer({
       url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/PumpsThiessenPolygons/FeatureServer/0",
       elevationInfo: {
