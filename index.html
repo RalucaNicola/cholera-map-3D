@@ -110,7 +110,7 @@
 
     footer {
       font-size: 0.8em;
-      line-height: 1.3Sem;
+      margin-top: 4em;
       font-style: italic;
     }
 
@@ -268,21 +268,17 @@
         Our 3D version uprights the original stacks of death, creating a vertical stack in the third dimension.
         This helps us visualize where the deaths occurred at their correct geographic location,
         which is important when gauging distances to the closest water pumps. Also on a 2D map, the stacks could overlap
-        or extend off
-        the streets or other features of the map. They are aligned with each
+        or extend off the streets or other features of the map. They are aligned with each
         street, so opposite sides or perpendicular streets make a direct comparison difficult.
-        This is why we created a new map and took his data to the third dimension.
       </p>
       <button id="switch-view" class="demo-button"> Switch to 3D → </button>
       <div id="content-3d">
-        <p>Originally John Snow aggregated into areas all the deaths on his map which were closest to each pump. This is
-          currently known as
-          Voronoi diagrams and we generated them and overlapped with the map.
+        <p>Originally John Snow aggregated into areas all the deaths on his map which were closest to each pump. We generated such
+          Voronoi diagrams and displayed on the map.
         </p>
         <button id="show-voronoi" class="demo-button"> Show Voronoi diagrams </button>
         <p>The section of Snow's map representing areas in the city where the closest available source of water was the
-          Broad Street
-          pump included the highest incidence of cholera cases.</p>
+          Broad Street pump included the highest incidence of cholera cases. Click on the stacked death incidents to see which is the closest pump.</p>
         <button id="show-pump" class="demo-button"> Show Broad Street pump </button>
       </div>
     </div>

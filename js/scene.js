@@ -3,12 +3,11 @@ define([
   "esri/Color",
   "esri/views/SceneView",
   "esri/Graphic",
-  "esri/layers/FeatureLayer",
   "esri/layers/support/LabelClass",
   "esri/geometry",
   "./font",
   "./fontmesh"
-], function (WebScene, Color, SceneView, Graphic, FeatureLayer,LabelClass, geometry, font, fontmesh) {
+], function (WebScene, Color, SceneView, Graphic, LabelClass, geometry, font, fontmesh) {
 
   function create() {
 
@@ -112,8 +111,7 @@ define([
         }, {
           name: "title",
           expression: "return IIf($feature.NumDeaths > 1, $feature.NumDeaths + ' cholera death incidents', $feature.NumDeaths + ' cholera death incident');"
-        }],
-        actions: []
+        }]
       }
     });
     let graphic = null;
@@ -131,6 +129,7 @@ define([
         });
 
         function makeGraphic(s, vangle) {
+
           if (vangle == null) {
             vangle = 0;
           }
@@ -146,7 +145,6 @@ define([
             }
           });
 
-          // Rotate so it stands up
           mesh.rotate(vangle, 0, 25, {
             origin: origin
           });
@@ -165,45 +163,6 @@ define([
           });
 
           view.graphics.add(graphic);
-        }
-
-        {
-          var i = 0;
-
-          window.typeIt = function typeIt() {
-            i += 1;
-
-            makeGraphic(text.slice(0, i));
-
-            if (i !== text.length) {
-              setTimeout(typeIt, 1);
-            }
-          }
-        }
-
-        {
-          var start = -90;
-          var stop = 90;
-          var t = 0;
-
-          var direction = 1;
-
-          window.rotateIt = function rotateIt() {
-            t = Math.max(0, Math.min(1, t + direction * 0.05));
-
-            var te = 1 - ((1 - t) * (1 - t) * (1 - t));
-
-            makeGraphic(text, te * (stop - start) + start);
-
-            if (direction > 0 && t < 1 || direction < 0 && t > 0) {
-              setTimeout(rotateIt, 1);
-            } else {
-              setTimeout(function () {
-                direction = -direction;
-                rotateIt();
-              }.bind(direction), 2000);
-            }
-          }
         }
 
         makeGraphic(text);
