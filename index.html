@@ -2,12 +2,15 @@
 <html>
 
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>John Snow Cholera Map 2D - 3D</title>
   <link href="https://fonts.googleapis.com/css?family=Euphoria+Script|Open+Sans&display=swap" rel="stylesheet">
   <style>
-    html, body, #viewDiv, #mapViewDiv {
+    html,
+    body,
+    #viewDiv,
+    #mapViewDiv {
       margin: 0;
       padding: 0;
       width: 100%;
@@ -38,7 +41,7 @@
       z-index: 1;
     }
 
-    button {
+    .demo-button {
       background-color: transparent;
       font-family: 'Euphoria Script', cursive;
       border: none;
@@ -49,32 +52,42 @@
       margin: 10px auto;
       cursor: pointer;
     }
-    button:hover{
+
+    .demo-button:hover {
       color: rgba(255, 255, 255, 0.8);
     }
 
     .infoPanel {
       position: relative;
       max-width: 400px;
-      height:100%;
+      height: 100%;
       z-index: 100;
       color: white;
-      padding: 10px;
-      padding: 10px 34px 40px 24px;
+      padding: 2em 3em;
       line-height: 1.5em;
-      text-align: justify;
-      background-color: rgba(0,0,0,0.8);
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
     }
+
     .infoPanel h1 {
       font-family: 'Euphoria Script', cursive;
       font-size: 2.4em;
       line-height: 1.4em;
       font-weight: normal;
+      text-align: center;
     }
 
     img {
       float: left;
-      padding: 0.5em;
+      margin: 0.7em 1.2em 0.6em 0.5em;
+      outline: 5px solid rgba(255, 255, 255, 0.5);
+      border: 2px solid transparent;
+    }
+    #content-3d {
+      display: none;
+    }
+    .esri-widget {
+      font-family: 'Open Sans', serif !important;
     }
 
   </style>
@@ -120,22 +133,27 @@
         container: "mapViewDiv",
         map: webmap
       });
-      mapView.ui.move([ "zoom" ], "top-right");
-      mapView.when(function(){
+      mapView.ui.move(["zoom"], "top-right");
+      mapView.when(function () {
         webmap.ground.surfaceColor = '#ffffff';
         webmap.basemap = null;
       });
 
-      var sceneView = scene.create();
-      sceneView.ui.move([ "zoom", "navigation-toggle", "compass" ], "top-right");
-      sceneView.padding = mapView.padding = {left: 300};
+      const sceneView = scene.create();
+      sceneView.ui.move(["zoom", "navigation-toggle", "compass"], "top-right");
+      sceneView.padding = mapView.padding = {
+        left: 300
+      };
 
       let is2D = true;
       // button that switches between 2D and 3D views
       const switchButton = document.getElementById("switch-view");
+
+      const content3D = document.getElementById("content-3d")
       switchButton.addEventListener("click", function () {
         is2D = !is2D;
         switchButton.innerHTML = is2D ? "Switch to 3D →" : "← Switch to 2D";
+        content3D.style.display = is2D ? "none": "inherit";
         switchView();
       });
 
@@ -145,9 +163,11 @@
         newView.extent = oldView.extent;
         if (newView === sceneView) {
           newView.goTo({
-            rotation: oldView.rotation,
-            tilt: 0
-          }, {animate: false})
+              rotation: oldView.rotation,
+              tilt: 0
+            }, {
+              animate: false
+            })
             .then(function () {
               animateOpacity(newView, oldView);
               return promiseUtils.after(1000)
@@ -155,12 +175,16 @@
             .then(function () {
               newView.goTo({
                 tilt: 60
-              }, {speedFactor: 0.3});
+              }, {
+                speedFactor: 0.3
+              });
             });
         } else {
           oldView.goTo({
-            tilt: 0
-          }, {speedFactor: 0.5})
+              tilt: 0
+            }, {
+              speedFactor: 0.5
+            })
             .then(function () {
               animateOpacity(newView, oldView);
               newView.rotation = 360 - oldView.camera.heading;
@@ -174,30 +198,59 @@
         oldView.container.classList.remove("switch-on");
         oldView.container.classList.add("switch-off");
       }
+
+      document.getElementById("show-voronoi").addEventListener("click", function() {
+        sceneView.map.presentation.slides.getItemAt(0).applyTo(sceneView);
+      });
+      document.getElementById("show-pump").addEventListener("click", function() {
+        sceneView.map.presentation.slides.getItemAt(1).applyTo(sceneView);
+      });
     });
+
   </script>
 </head>
 
 <body>
-<div id="viewDiv" class="switch-off"></div>
-<div id="mapViewDiv" class="switch-on"></div>
-<div class="infoPanel panel2d">
-  <h1>The cholera map that changed the world</h1>
-  <div>
-    <img src="assets/john_snow_crop.png">
-  John Snow's map of cholera outbreaks from nineteenth century London changed how we saw a disease and is considered as one of the most inspirational examples of data journalism.
-  In the world of the 1850s, cholera was believed to be spread by miasma in the air and the sudden and serious outbreak of cholera in London's Soho was a mystery.<br>
-    His map essentially represented each death as a bar as you can see in his map on the right. It became apparent that the cases were clustered around the pump in Broad (now Broadwick) street, which was polluted by sewage from a nearby cesspit.
-    <br>
-    <br>
-  This visualization worked for this particular case, but doesn't scale. Those bars could overlap, extend of streets or other features of the map and most importantly are hard to compare. They are aligned with each street, so opposite sides or perpendicular streets make a direct comparison difficult.
-    This is why we created a new map and took his data to the third dimension.
-  <button id="switch-view" class="demo-button"> Switch to 3D → </button>
+  <div id="viewDiv" class="switch-off"></div>
+  <div id="mapViewDiv" class="switch-on"></div>
+  <div class="infoPanel panel2d">
+    <h1>The cholera map <br />
+      that changed the world</h1>
+    <div>
+      <p>
+        <img src="assets/john_snow_crop.png">
+        John Snow's map of cholera outbreaks from nineteenth century London changed how we saw a disease and is
+        considered as one of the most inspirational examples of data journalism.
+        In the world of the 1850s, cholera was believed to be spread by miasma in the air and the sudden and serious
+        outbreak of cholera in London's Soho was a mystery.<br>
+        His map essentially represented each death as a bar as you can see in his map on the right. It became apparent
+        that the cases were clustered around the pump in Broad (now Broadwick) street, which was polluted by sewage from
+        a nearby cesspit.
+      </p>
+      <p>
+        As a fun experiment, we decided to visualize the same data in 3D.
+        Our 3D version uprights the original stacks of death, creating a vertical stack in the third dimension.
+        This helps us visualize where the deaths occurred at their correct geographic location,
+        which is important when gauging distances to the closest water pumps. Also on a 2D map, the stacks could overlap or extend off
+        the streets or other features of the map. They are aligned with each
+        street, so opposite sides or perpendicular streets make a direct comparison difficult.
+        This is why we created a new map and took his data to the third dimension.
+      </p>
+      <button id="switch-view" class="demo-button"> Switch to 3D → </button>
+      <div id="content-3d">
+      <p>Originally John Snow aggregated into areas all the deaths on his map which were closest to each pump. This is currently known as
+        Voronoi diagrams and we generated them and overlapped with the map.
+      </p>
+      <button id="show-voronoi" class="demo-button"> Show Voronoi diagrams </button>
+      <p>The section of Snow's map representing areas in the city where the closest available source of water was the Broad Street
+        pump included the highest incidence of cholera cases.</p>
+      <button id="show-pump" class="demo-button"> Show Broad Street pump </button>
+      </div>
+    </div>
   </div>
-</div>
-<div class="infoPanel panel3d">
+  <div class="infoPanel panel3d">
 
-</div>
+  </div>
 
 </body>
 

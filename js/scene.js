@@ -25,10 +25,14 @@ define([
     });
     view.highlightOptions.color = new Color("#b5b5b5");
 
+    let pumpsLayer = null;
+    let deathsLayer = null;
 
-    const pumps = new FeatureLayer({
-      url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/Pumps/FeatureServer/2",
-      renderer: {
+    map.when(function() {
+      pumpsLayer = map.layers.find(function(layer) {
+        return layer.title === "Pumps";
+      });
+      pumpsLayer.renderer = {
         type: "simple",
         field: "FID",
         symbol: {
@@ -42,86 +46,76 @@ define([
               color: [70, 70, 70, 1]
             },
             depth: 10,
-            height: 20,
+            height: 5,
             width: 10
           }]
         }
-      },
-      labelingInfo: [
+      };
+      pumpsLayer.labelingInfo = [
         new LabelClass({
           labelExpressionInfo: {expression: "$feature.Name"},
-          //labelPlacement: "below-right",
           symbol: {
             type: "label-3d",
             symbolLayers: [{
               type: "text",
               material: {
-                color: [20, 20, 20, 1]
+                color: [70, 70, 70, 1]
               },
               halo: {
-                size: 2,
+                size: 3,
                 color: [255, 255, 255, 1]
               },
               font: {
-                size: 14,
+                size: 18,
                 weight: "bold",
                 family: "Euphoria Script",
               }
             }],
             verticalOffset: {
               screenLength: 100,
-              maxWorldLength: 500000,
+              maxWorldLength: 10000,
               minWorldLength: 0
             },
             callout: {
               type: "line",
-              size: 2,
-              color: [20, 20, 20, 1],
+              size: 1,
+              color: [70, 70, 70, 1],
             }
           }
         })
       ]
-    });
-    map.add(pumps);
+      console.log(pumpsLayer);
 
-    const polygons = new FeatureLayer({
-      url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/PumpsThiessenPolygons/FeatureServer/0",
-      elevationInfo: {
-        mode: "on-the-ground",
-        offset: -1,
-        unit: "meters"
-      },
-      renderer: {
-        type: "unique-value",
-        field: "Pump_FID",
-        defaultSymbol: {
-          type: "polygon-3d",
-          symbolLayers: [{
-            type: "fill",
-            material: {color: [230, 230, 230, 0]},
-            outline: {
-              color: [70, 70, 70, 1],
-              size: 2
-            }
-          }]
-        },
-        uniqueValueInfos: [{
-          value: 0,
-          symbol: {
-            type: "polygon-3d",
-            symbolLayers: [{
-              type: "fill",
-              material: {color: [200, 200, 200, 0]},
-              outline: {
-                color: [70, 70, 70, 1],
-                size: 3
-              }
-            }]
-          }
-        }]
+      deathsLayer = map.layers.find(function(layer) {
+        return layer.title === "Cholera deaths";
+      });
+
+      deathsLayer.popupTemplate = {
+        title: "{expression/title}",
+        content: "The closest pump is {expression/pump} and the minimum distance from this pump is {expression/distance}m.",
+        expressionInfos: [{
+          name: "pump",
+          expression: "var pump = Text($feature.ClosestPump);" +
+            "var p = Dictionary(" +
+            "'0', 'Broad St Pump'," +
+            "'1', 'Carnaby St Pump'," +
+            "'2', 'Marlborough Mews Pump'," +
+            "'3', 'Dean St Pump'," +
+            "'4', 'Rupert St Pump'," +
+            "'5', 'Brewer St Pump'," +
+            "'6', 'Piccadilly Pump'," +
+            "'7', 'Warwick St Pump');"+
+          "return IIf(hasKey(p, pump), p[pump], 'No data');"
+        }, {
+          name: "distance",
+          expression: "return Ceil($feature.MinDist, 2);"
+        }, {
+          name: "title",
+          expression: "return IIf($feature.NumDeaths > 1, $feature.NumDeaths + ' cholera death incidents', $feature.NumDeaths + ' cholera death incident');"
+        }],
+        actions: []
       }
     });
-
     let graphic = null;
 
     font.create("./EuphoriaScript-Regular.ttf")
