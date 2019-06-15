@@ -2,74 +2,36 @@ define([
   "esri/WebScene",
   "esri/Color",
   "esri/views/SceneView",
-  "esri/views/3d/support/debugFlags",
   "esri/Graphic",
   "esri/layers/FeatureLayer",
   "esri/layers/support/LabelClass",
   "esri/geometry",
   "./font",
   "./fontmesh"
-], function (WebScene, Color, SceneView, debugFlags, Graphic, FeatureLayer,LabelClass, geometry, font, fontmesh) {
+], function (WebScene, Color, SceneView, Graphic, FeatureLayer,LabelClass, geometry, font, fontmesh) {
 
   function create() {
-    // debugFlags.DRAW_MESH_GEOMETRY_NORMALS = true;
 
-    var map = new WebScene({
+    const map = new WebScene({
       portalItem: {
         id: "2535399d4a6040fd8c60c46d57209548"
       }
     });
 
-    var view = new SceneView({
+    const view = new SceneView({
       container: "viewDiv",
       map: map,
       qualityProfile: "high"
     });
     view.highlightOptions.color = new Color("#b5b5b5");
-    var thiessenPolygons = new FeatureLayer({
-      url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/PumpsThiessenPolygons/FeatureServer/0",
-      elevationInfo: {
-        mode: "on-the-ground",
-        offset: -1,
-        unit: "meters"
-      },
-      renderer: {
-        type: "unique-value",
-        field: "Pump_FID",
-        defaultSymbol: {
-          type: "polygon-3d",
-          symbolLayers: [{
-            type: "fill",
-            material: {color: [230, 230, 230, 1]},
-            outline: {
-              color: [70, 70, 70, 1],
-              size: 2
-            }
-          }]
-        },
-        uniqueValueInfos: [{
-          value: 0,
-          symbol: {
-            type: "polygon-3d",
-            symbolLayers: [{
-              type: "fill",
-              material: {color: [200, 200, 200, 1]},
-              outline: {
-                color: [70, 70, 70, 1],
-                size: 2
-              }
-            }]
-          }
-        }]
-      }
-    });
 
-    var pumps = new FeatureLayer({
+
+    const pumps = new FeatureLayer({
       url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/Pumps/FeatureServer/2",
       renderer: {
-        type: "unique-value",
+        type: "simple",
         field: "FID",
-        defaultSymbol: {
+        symbol: {
           type: "point-3d",
           symbolLayers: [{
             type: "object",
@@ -77,31 +39,13 @@ define([
               primitive: "cylinder"
             },
             material: {
-              color: [230, 230, 230, 1]
+              color: [70, 70, 70, 1]
             },
-            depth: 10,
-            height: 60,
-            width: 10
+            depth: 5,
+            height: 70,
+            width: 5
           }]
-        },
-        uniqueValueInfos: [{
-          value: 1,
-          symbol: {
-            type: "point-3d",
-            symbolLayers: [{
-              type: "object",
-              resource: {
-                primitive: "cylinder"
-              },
-              material: {
-                color: [200, 200, 200, 1]
-              },
-              depth: 10,
-              height: 60,
-              width: 10
-            }]
-          }
-        }]
+        }
       },
       labelingInfo: [
         new LabelClass({
@@ -123,7 +67,7 @@ define([
                 family: "sans-serif",
               }
             }],
-            verticalOffset: {
+            /* verticalOffset: {
               screenLength: 40,
               maxWorldLength: 500000,
               minWorldLength: 0
@@ -135,14 +79,52 @@ define([
               border: {
                 color: [0, 0, 0, 1]
               }
-            }
+            } */
           }
         })
       ]
     });
-    map.addMany([thiessenPolygons, pumps]);
+    map.add(pumps);
 
-    var graphic = null;
+    const polygons = new FeatureLayer({
+      url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/PumpsThiessenPolygons/FeatureServer/0",
+      elevationInfo: {
+        mode: "on-the-ground",
+        offset: -1,
+        unit: "meters"
+      },
+      renderer: {
+        type: "unique-value",
+        field: "Pump_FID",
+        defaultSymbol: {
+          type: "polygon-3d",
+          symbolLayers: [{
+            type: "fill",
+            material: {color: [230, 230, 230, 0]},
+            outline: {
+              color: [70, 70, 70, 1],
+              size: 2
+            }
+          }]
+        },
+        uniqueValueInfos: [{
+          value: 0,
+          symbol: {
+            type: "polygon-3d",
+            symbolLayers: [{
+              type: "fill",
+              material: {color: [200, 200, 200, 0]},
+              outline: {
+                color: [70, 70, 70, 1],
+                size: 3
+              }
+            }]
+          }
+        }]
+      }
+    });
+
+    let graphic = null;
 
     font.create("./font.ttf")
       .then(function (font) {
