@@ -41,9 +41,9 @@ define([
             material: {
               color: [70, 70, 70, 1]
             },
-            depth: 5,
-            height: 70,
-            width: 5
+            depth: 10,
+            height: 20,
+            width: 10
           }]
         }
       },
@@ -56,7 +56,7 @@ define([
             symbolLayers: [{
               type: "text",
               material: {
-                color: [50, 50, 50, 1]
+                color: [20, 20, 20, 1]
               },
               halo: {
                 size: 2,
@@ -64,22 +64,20 @@ define([
               },
               font: {
                 size: 14,
-                family: "sans-serif",
+                weight: "bold",
+                family: "Euphoria Script",
               }
             }],
-            /* verticalOffset: {
-              screenLength: 40,
+            verticalOffset: {
+              screenLength: 100,
               maxWorldLength: 500000,
               minWorldLength: 0
             },
             callout: {
               type: "line",
               size: 2,
-              color: [255, 255, 255, 1],
-              border: {
-                color: [0, 0, 0, 1]
-              }
-            } */
+              color: [20, 20, 20, 1],
+            }
           }
         })
       ]
@@ -126,7 +124,7 @@ define([
 
     let graphic = null;
 
-    font.create("./font.ttf")
+    font.create("./EuphoriaScript-Regular.ttf")
       .then(function (font) {
         var origin = new geometry.Point(-0.1360283724781709, 51.51351779622604, 0);
         var text = "Broad Street";

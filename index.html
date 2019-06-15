@@ -5,14 +5,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no"/>
   <title>John Snow Cholera Map 2D - 3D</title>
-
+  <link href="https://fonts.googleapis.com/css?family=Euphoria+Script|Open+Sans&display=swap" rel="stylesheet">
   <style>
     html, body, #viewDiv, #mapViewDiv {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      font-family: "Arial", sans-serif;
+      font-family: 'Open Sans', serif;
       overflow: hidden;
     }
 
@@ -38,46 +38,43 @@
       z-index: 1;
     }
 
-    #switch-view {
-      position: relative;
-      display: block;
-      top: 20px;
-      right: 20px;
-      z-index: 3;
-      background-color: white;
+    button {
+      background-color: transparent;
+      font-family: 'Euphoria Script', cursive;
       border: none;
-      padding: 5px;
-      width: 115px;
-      color: black;
-      margin-left: 104px;
-      text-align: center;
-    }
-    #switch-view:hover{
-      font-weight: bold;
+      padding: 0.5em;
+      color: white;
+      display: block;
+      font-size: 1.8em;
+      margin: 10px auto;
       cursor: pointer;
+    }
+    button:hover{
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .infoPanel {
-      font-style: italic;
       position: relative;
-      width: 300px;
+      max-width: 400px;
       height:100%;
       z-index: 100;
       color: white;
       padding: 10px;
       padding: 10px 34px 40px 24px;
+      line-height: 1.5em;
       text-align: justify;
       background-color: rgba(0,0,0,0.8);
     }
-    .infoPanel h2 {
-      text-align: left;
+    .infoPanel h1 {
+      font-family: 'Euphoria Script', cursive;
+      font-size: 2.4em;
+      line-height: 1.4em;
+      font-weight: normal;
     }
 
-    #johnSnow {
-      background-image: url("assets/john_snow.png");
-      background-size: cover;
-      width: 302px;
-      height: 191px;
+    img {
+      float: left;
+      padding: 0.5em;
     }
 
   </style>
@@ -138,7 +135,7 @@
       const switchButton = document.getElementById("switch-view");
       switchButton.addEventListener("click", function () {
         is2D = !is2D;
-        switchButton.innerHTML = is2D ? "Switch to 3D" : "Switch to 2D";
+        switchButton.innerHTML = is2D ? "Switch to 3D →" : "← Switch to 2D";
         switchView();
       });
 
@@ -185,9 +182,9 @@
 <div id="viewDiv" class="switch-off"></div>
 <div id="mapViewDiv" class="switch-on"></div>
 <div class="infoPanel panel2d">
+  <h1>The cholera map that changed the world</h1>
   <div>
-    <div id="johnSnow"></div>
-    <br> <br>
+    <img src="assets/john_snow_crop.png">
   John Snow's map of cholera outbreaks from nineteenth century London changed how we saw a disease and is considered as one of the most inspirational examples of data journalism.
   In the world of the 1850s, cholera was believed to be spread by miasma in the air and the sudden and serious outbreak of cholera in London's Soho was a mystery.<br>
     His map essentially represented each death as a bar as you can see in his map on the right. It became apparent that the cases were clustered around the pump in Broad (now Broadwick) street, which was polluted by sewage from a nearby cesspit.
@@ -195,7 +192,7 @@
     <br>
   This visualization worked for this particular case, but doesn't scale. Those bars could overlap, extend of streets or other features of the map and most importantly are hard to compare. They are aligned with each street, so opposite sides or perpendicular streets make a direct comparison difficult.
     This is why we created a new map and took his data to the third dimension.
-  <div id="switch-view" class="demo-button"> Switch to 3D </div>
+  <button id="switch-view" class="demo-button"> Switch to 3D → </button>
   </div>
 </div>
 <div class="infoPanel panel3d">

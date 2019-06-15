@@ -9,7 +9,7 @@ define([
   const createFont = fontkit.fontkit.create;
 
   function create(fontfile) {
-    return request("./font.ttf", { responseType: "array-buffer" })
+    return request(fontfile, { responseType: "array-buffer" })
         .then(response => {
           const buffer = Buffer.from(response.data);
           const font = createFont(buffer);
