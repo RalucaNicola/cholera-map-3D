@@ -19,9 +19,9 @@
       overflow: hidden;
     }
 
-    .esri-attribution {
+    /* .esri-attribution {
       display: none !important;
-    }
+    } */
 
     #viewDiv,
     #mapViewDiv {
@@ -59,7 +59,7 @@
 
     .infoPanel {
       position: relative;
-      max-width: 400px;
+      max-width: 500px;
       height: 100%;
       z-index: 100;
       color: white;
@@ -67,6 +67,9 @@
       line-height: 1.5em;
       overflow: auto;
       background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
     }
 
     .infoPanel h1 {
@@ -76,18 +79,51 @@
       font-weight: normal;
       text-align: center;
     }
+    .infoPanel-content {
+      flex: 1;
+    }
 
     img {
       float: left;
       margin: 0.7em 1.2em 0.6em 0.5em;
-      outline: 5px solid rgba(255, 255, 255, 0.5);
+      outline: 5px solid rgba(255, 255, 255, 0.8);
       border: 2px solid transparent;
     }
+
     #content-3d {
       display: none;
     }
+
     .esri-widget {
       font-family: 'Open Sans', serif !important;
+    }
+
+    .esri-popup__icon--dock-icon,
+    .esri-popup__inline-actions-container,
+    .esri-attribution {
+      display: none !important;
+    }
+
+    .esri-popup__main-container {
+      padding: 2em;
+    }
+
+    footer {
+      font-size: 0.8em;
+      line-height: 1.3Sem;
+      font-style: italic;
+    }
+
+    footer a {
+      text-decoration: none;
+      border-bottom: 1px solid white;
+      color: white;
+      cursor: pointer;
+    }
+
+    footer a:hover {
+      color: rgba(255, 255, 255, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.8);
     }
 
   </style>
@@ -153,7 +189,7 @@
       switchButton.addEventListener("click", function () {
         is2D = !is2D;
         switchButton.innerHTML = is2D ? "Switch to 3D →" : "← Switch to 2D";
-        content3D.style.display = is2D ? "none": "inherit";
+        content3D.style.display = is2D ? "none" : "inherit";
         switchView();
       });
 
@@ -199,10 +235,10 @@
         oldView.container.classList.add("switch-off");
       }
 
-      document.getElementById("show-voronoi").addEventListener("click", function() {
+      document.getElementById("show-voronoi").addEventListener("click", function () {
         sceneView.map.presentation.slides.getItemAt(0).applyTo(sceneView);
       });
-      document.getElementById("show-pump").addEventListener("click", function() {
+      document.getElementById("show-pump").addEventListener("click", function () {
         sceneView.map.presentation.slides.getItemAt(1).applyTo(sceneView);
       });
     });
@@ -213,10 +249,10 @@
 <body>
   <div id="viewDiv" class="switch-off"></div>
   <div id="mapViewDiv" class="switch-on"></div>
-  <div class="infoPanel panel2d">
-    <h1>The cholera map <br />
-      that changed the world</h1>
-    <div>
+  <div class="infoPanel">
+    <div class="infoPanel-content">
+      <h1>The cholera map <br />
+        that changed the world</h1>
       <p>
         <img src="assets/john_snow_crop.png">
         John Snow's map of cholera outbreaks from nineteenth century London changed how we saw a disease and is
@@ -231,26 +267,38 @@
         As a fun experiment, we decided to visualize the same data in 3D.
         Our 3D version uprights the original stacks of death, creating a vertical stack in the third dimension.
         This helps us visualize where the deaths occurred at their correct geographic location,
-        which is important when gauging distances to the closest water pumps. Also on a 2D map, the stacks could overlap or extend off
+        which is important when gauging distances to the closest water pumps. Also on a 2D map, the stacks could overlap
+        or extend off
         the streets or other features of the map. They are aligned with each
         street, so opposite sides or perpendicular streets make a direct comparison difficult.
         This is why we created a new map and took his data to the third dimension.
       </p>
       <button id="switch-view" class="demo-button"> Switch to 3D → </button>
       <div id="content-3d">
-      <p>Originally John Snow aggregated into areas all the deaths on his map which were closest to each pump. This is currently known as
-        Voronoi diagrams and we generated them and overlapped with the map.
-      </p>
-      <button id="show-voronoi" class="demo-button"> Show Voronoi diagrams </button>
-      <p>The section of Snow's map representing areas in the city where the closest available source of water was the Broad Street
-        pump included the highest incidence of cholera cases.</p>
-      <button id="show-pump" class="demo-button"> Show Broad Street pump </button>
+        <p>Originally John Snow aggregated into areas all the deaths on his map which were closest to each pump. This is
+          currently known as
+          Voronoi diagrams and we generated them and overlapped with the map.
+        </p>
+        <button id="show-voronoi" class="demo-button"> Show Voronoi diagrams </button>
+        <p>The section of Snow's map representing areas in the city where the closest available source of water was the
+          Broad Street
+          pump included the highest incidence of cholera cases.</p>
+        <button id="show-pump" class="demo-button"> Show Broad Street pump </button>
       </div>
     </div>
+    <footer>
+      Fun experiment made by <a href="https://ch.linkedin.com/in/janettbaresel" target="_blank">Janett Baresel</a>,
+      <a href="https://ch.linkedin.com/in/cheryl-lau-6641b681" target="_blank">Cheryl Lau</a> and
+      <a href="https://twitter.com/nicolaraluk" target="_blank">Raluca Nicola</a>. We used
+      <a href="https://www.esri.com/en-us/arcgis/products/esri-cityengine/overview" target="_blank">CityEngine</a>,
+      <a href="https://pro.arcgis.com/en/pro-app/" target="_blank">ArcGIS Pro</a> and
+      <a href="https://developers.arcgis.com/javascript/" target="_blank">ArcGIS API for JavaScript</a>.
+      Original data from <a href="http://blog.rtwilson.com/john-snows-cholera-data-in-more-formats/"
+        target="_blank">Robin Wilson's blog</a>.
+      Text and images from <a href="https://en.wikipedia.org/wiki/John_Snow">Wikipedia</a>.
+    </footer>
   </div>
-  <div class="infoPanel panel3d">
 
-  </div>
 
 </body>
 
