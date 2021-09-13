@@ -42,7 +42,7 @@ define([
               primitive: "cylinder"
             },
             material: {
-              color: [70, 70, 70, 1]
+              color: [110, 146, 181, 1]
             },
             depth: 10,
             height: 5,
@@ -58,27 +58,27 @@ define([
             symbolLayers: [{
               type: "text",
               material: {
-                color: [70, 70, 70, 1]
+                color: [110, 146, 181, 1]
               },
               halo: {
-                size: 3,
-                color: [255, 255, 255, 1]
+                size: 1,
+                color: [255, 255, 255, 0.9]
               },
               font: {
-                size: 18,
+                size: 16,
                 weight: "bold",
                 family: "Euphoria Script",
               }
             }],
             verticalOffset: {
-              screenLength: 100,
+              screenLength: 20,
               maxWorldLength: 10000,
               minWorldLength: 0
             },
             callout: {
               type: "line",
               size: 1,
-              color: [70, 70, 70, 1],
+              color: [110, 146, 181, 1],
             }
           }
         })
@@ -167,7 +167,7 @@ define([
 
         makeGraphic(text);
       })
-      .otherwise(function (err) {
+      .catch(function (err) {
         console.error(err);
       });
 
